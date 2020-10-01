@@ -13,7 +13,7 @@ rt %>%
   theme(plot.title = element_text(face = "bold")) +
   labs(
     x = NULL, y = NULL,
-    title = "Frequency of #rstats Twitter statuses from past 30 days",
+    title = "Frequency of #Prop16 Twitter statuses from past 30 days",
     subtitle = "Twitter status (tweet) counts aggregated using three-hour intervals",
     caption = "\nSource: Data collected from Twitter's REST API via rtweet"
   )
