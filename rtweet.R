@@ -22,7 +22,7 @@ geo <- lat_lng(rt)
 
 ## plot state boundaries
 par(mar = c(0, 0, 0, 0))
-map('state')
+map('state', region = "california")
 ## plot lat and lng points onto state map
 with(geo, points(lng, lat, pch = 20, cex = .75, col = rgb(0, .3, .7, .75)))
 
