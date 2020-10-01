@@ -1,8 +1,11 @@
 library(rtweet)
+library(dplyr)
+library(tidyverse)
 library(ggplot2)
+
 toDate <- format(Sys.time() - 60 * 60 * 24 * 7, "%Y%m%d%H%M")
 
-rt <- search_30day("#Prop18", n = 300,
+rt <- search_30day("#Prop16", n = 10000,
                    env_name = "research", toDate = toDate)
 rt %>%
   ts_plot("3 hours") +
@@ -19,7 +22,7 @@ geo <- lat_lng(rt)
 
 ## plot state boundaries
 par(mar = c(0, 0, 0, 0))
-map('state', region = "california")
+map('state')
 ## plot lat and lng points onto state map
 with(geo, points(lng, lat, pch = 20, cex = .75, col = rgb(0, .3, .7, .75)))
 
