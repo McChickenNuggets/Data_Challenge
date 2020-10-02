@@ -112,7 +112,6 @@ sentimentM3 <- textdf %>%
   unnest_tokens(word, text) %>% 
   left_join(get_sentiments("afinn")) %>% 
   replace_na(list(value=0L)) %>%
-  group_by(id) %>%
   mutate(
     id,
     sentiment3 = case_when(
@@ -163,3 +162,4 @@ df2_new <- dfM123 %>%
 pp16df <- df1 %>% bind_rows(df2_new)
 
 
+write.csv(pp16df,"C:\\Users\\Jaune\\Documents\\Github\\Data_Challenge\\pp16df.csv")
