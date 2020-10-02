@@ -1,6 +1,4 @@
- library(tidyverse)
-library(stringr)
-library(MASS)
+library(tidyverse)
 
 # Read the data
 pp16twitter <- read_csv("pp16df.csv", col_types = cols())
@@ -11,10 +9,10 @@ temp<-pp16twitter %>% filter(support!="neutral")
 # Select Required Varaible
 temp<-temp %>% select(support,inCA,influential)
 
-# Replace yes with 1, no with 0
-temp$support<-str_replace(temp$support,"no",'0')
-temp$support<-str_replace(temp$support,"yes","1")
-temp$support<-as.numeric(temp$support)
+# Replace variable
+temp$support=ifelse(temp$support=='yes',1,0)
+temp$inCA=ifelse(temp$inCA=='yes', 1,0)
+temp$influential=ifelse(temp$influential=='yes', 1,0)
 
 # visualize the variable
 # correlation between numeric variables
@@ -23,12 +21,12 @@ corrgram(temp, order = TRUE,
          lower.panel = panel.shade, upper.panel = panel.pie,
          text.panel = panel.txt,
          main = "Correlogram of Variables")
-# No numeric Variable in our dataset, and we cannot use corrgram to display the correlation between variables
 
 # Conduct logistic regression to dataset
 initial<-glm(formula = support~inCA+influential+inCA*influential,data=temp,family = 'binomial')
 summary(initial)
 
+library(MASS)
 # Run stepAIC to get the best fit model
 stepAIC(initial,scope = list(lower=~1), direction = "backward",k=2)
 
@@ -36,8 +34,14 @@ stepAIC(initial,scope = list(lower=~1), direction = "backward",k=2)
 
 # Test the percentage of correctness given our model
 log_predprob = predict(initial, temp,type='response')
-log_pred = (log_predprob > 0.5)
+
+# Change standard to 0.5, then there is error in prediction given our model since all of the 
+# predicted response is less than 0.5. Based on the givern result, we manage to do a good job
+# in conducting text-mining for Not support.
+standard<-0.4
+log_pred = log_predprob > standard
 log_cm = table(true = temp$support, predicted = log_pred)
 log_cm
 sum(diag(log_cm))/sum(log_cm)
+
 
