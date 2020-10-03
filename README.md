@@ -286,9 +286,8 @@ Based on the result and determine the best model is the initial model, and we us
 # Test the percentage of correctness given our model
 log_predprob = predict(initial, temp,type='response')
 
-# Change standard to 0.5, then there is error in prediction given our model since all of the 
-# predicted response is less than 0.5. Based on the givern result, we manage to do a good job
-# in conducting text-mining for Not support.
+# Change standard to 0.5, all of the predicted response is less than 0.5, 
+# So We decide to set the standard to 0.4 to view the chanegs in result.
 standard<-0.4
 log_pred = log_predprob > standard
 log_cm = table(true = temp$support, predicted = log_pred)
@@ -305,10 +304,64 @@ sens
 spec=779/(779+64)
 spec
 ```
-The proportion of prediction for Yes on prop16 out of the number of samples which actually support prop16 is only 18% correct based on our model.
-The propotion of predictions for No on prop16 out of the number of samples which actually object prop16 is 92.4% correct based on our model.
-Therefore, our current model is not significant given the limited explanatory variables we have after we filtered the useful information.
+The proportion of prediction for Yes on prop16 out of the number of samples which actually support prop16 is only 18% correct based on our model, and the propotion of predictions for No on prop16 out of the number of samples which actually object prop16 is 92.4% correct based on our model.Even though our model has a high specificity, but we have a negligible sensitivty. Therefore,  we conclude our current model is not significant given the limited explanatory variables we have after we filtered the useful information.
 
 ## Data Visualization
+Due to the lack of significance of our logistic model, we decide to investigate the impacts of the Propostion 16 on college admission. We obtain admission summary for [UC Davis] [df1] from https://www.universityofcalifornia.edu/infocenter/admissions-residency-and-ethnicity 
 
+#### Change in Applicants by Ethnicity
+```r
+# Line Plot for Applicants by Ethnicity
+ggplot(data=temp_Applicants, aes(x=Academic_year, y=Count, group=Ethnicity)) +
+  geom_line(aes(linetype=Ethnicity,color=Ethnicity))+
+  geom_point(aes(shape=Ethnicity,color=Ethnicity))+
+  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
+  labs(title="Applicants Change For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
+```
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Applicants%20Change.png)
+```r
+# Bar Plot for Applicants by Ethnicity
+ggplot(data=temp_Admits, aes(fill=Ethnicity, y=Count, x=Academic_year)) + 
+  geom_bar(position="fill", stat="identity")+
+  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
+  labs(title="Proportion in Applicants For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
+```
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Propotion%20in%20Applicants.png)
+
+#### Change in Admits by Ethnicity
+```r
+# Line Plot for Admits by Ethnicity
+ggplot(data=temp_Admits, aes(x=Academic_year, y=Count, group=Ethnicity)) +
+  geom_line(aes(linetype=Ethnicity,color=Ethnicity))+
+  geom_point(aes(shape=Ethnicity,color=Ethnicity))+
+  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
+  labs(title="Admits Change For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
+```
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Admits%20Change.png)
+```r
+# Bar Plot for Admits by Ethnicity
+ggplot(data=temp_Admits, aes(fill=Ethnicity, y=Count, x=Academic_year)) + 
+  geom_bar(position="fill", stat="identity")+
+  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
+  labs(title="Proportion in Admits For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
+```
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Proportion%20in%20Admits.png)
+#### Change in Enrollees by Ethnicity
+```r
+# Line Plot for Enrollees by Ethnicity
+ggplot(data=temp_Enrollees, aes(x=Academic_year, y=Count, group=Ethnicity)) +
+  geom_line(aes(linetype=Ethnicity,color=Ethnicity))+
+  geom_point(aes(shape=Ethnicity,color=Ethnicity))+
+  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
+  labs(title="Enrollees Change For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
+```
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Enrollees%20Change.png)
+```r
+# Bar Plot for Applicants by Ethnicity
+ggplot(data=temp_Admits, aes(fill=Ethnicity, y=Count, x=Academic_year)) + 
+  geom_bar(position="fill", stat="identity")+
+  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
+  labs(title="Proportion in Applicants For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
+```
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Proportion%20in%20Enrollees.png)
 ## Conclusion
