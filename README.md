@@ -4,6 +4,7 @@ This is a project focusing on the impacts of Proposition 16. We retrieve data fr
 
 ## Key Techniques!
   - Web Scraping
+  - Data Processing
   - Text Mining
   - Logistic Regression
   - Data Visualization
@@ -35,7 +36,6 @@ ggplot(data_pie1, aes(x=Proposition, y=num, fill=Proposition)) +
 Based on the proposition popularity share, we can see Proposition 16 is the most controversial one among all the propositions. In the past 30 days, there are nearly 3000 tweets that contain the hashtag of #Prop16. Therefore, we decide to foucs on the ultermost controversial proposition 16 for our data challenge.
 
 ## Web Scraping
-#### Search tweets
 Search for up to 15,000 (non-retweeted) tweets containing the #Prop16 hashtag.
 ```r
 # Retrieve System Time A week ago
@@ -72,10 +72,237 @@ map('state', region = "california",lwd=.25)
 ## plot lat and lng points onto state map
 with(geo, points(lng, lat, pch = 20, cex = .75, col = rgb(0, .3, .7, .75)))
 ```
-## Text Mining
+## Data Processing
+Filter the Dataset
+```r
+# Filter important attributes
+rt<- rt %>% select(user_id,screen_name:source,is_quote:hashtags,lang,name:verified,-url,-account_created_at)
+
+# Check whether each attribute is convertible
+sapply(rt,class)
+
+# Transform the attribute
+rt$hashtags<-as.character(rt$hashtags)
+
+# Write to CSV file
+write.csv(rt,"C:\\Users\\Jaune\\Desktop\\pp16twitter.csv")
+```
+Import the Dataset and Reprocess
+```r
+pp16twitter <- read_csv("pp16twitter.csv", col_types = cols())
+
+# redefine original data as new df for analysis
+pp16twi <- pp16twitter %>% 
+  drop_na(c(hashtags, location)) %>%
+  transmute(
+    support = case_when(
+    str_detect(hashtags, regex("(yes)|(Opportunity4All)", ignore_case=TRUE)) ~ "yes",
+    str_detect(hashtags, regex("(no)|(stop)|(unitynotdivision)", ignore_case=TRUE)) ~ "no",
+    TRUE ~ "undef"
+  ), 
+  text, 
+  inCA = ifelse(str_detect(location, regex("(CA)|(California)", ignore_case=TRUE)), "yes", "no"), 
+  influential = case_when(
+    followers_count > 1000 ~ "yes",
+    followers_count < 1000 ~ "no"
+  ),
+  username = screen_name,
+  bio = description
+  )
+
+# twitter dataset split into 2 parts: df1 - yes/no defined in hashtags & df2 - those undefined
+df1 <- pp16twi %>% filter(support != "undef")
+df2 <- pp16twi %>% filter(support == "undef")
+
+# those undefined (df2) need to be defined based on text sentiment analysis 
+textdf <- df2 %>% mutate(id = 1:nrow(df2))
+```
+## Text Mining (Sentiment Analysis)
+#### 1st method: unigram sentiment analysis for tweets with 'bing' lexicon
+```{r}
+# each tweet split into single word and take out stop words
+tweet_token <- textdf %>% 
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  group_by(id) %>%
+  count(word,sort = TRUE) %>%
+  arrange(id)
+
+# freq of each word in each tweet
+tweet_propotions <- tweet_token %>% 
+  group_by(id) %>% 
+  mutate(propotion = n / sum(n)) %>% 
+  select(-n) %>%
+  arrange(id, desc(propotion))
+ 
+ # define yes/no based on positive/negative sentiment on prop16
+sentimentM1 <- tweet_token %>% 
+  left_join(get_sentiments("bing")) %>% 
+  group_by(id) %>% 
+  summarize(  # the frequencies are ignored in this analysis
+    positive = sum(sentiment == "positive", na.rm = TRUE), 
+    negative = sum(sentiment == "negative", na.rm = TRUE), 
+    neutral = n() - positive - negative) %>%
+  mutate(
+    id,
+    sentiment1 = case_when(
+      positive > negative ~ "positive",
+      positive < negative ~ "negative",
+      TRUE ~ "neutral"
+    )
+  ) %>% 
+  left_join(select(textdf, id, username)) %>% 
+  select(sentiment1, id, username)
+```
+#### 2nd method: bigrams sentiment analysis for tweets with 'bing' lexicon
+```{r}
+tweet_token2 <- textdf %>%
+  unnest_tokens(bigram, text, token = "ngrams", n = 2) %>% 
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+negate_words <- c("not", "without", "no", "can't", "don't", "won't")
+
+sentimentM2 <- tweet_token2 %>% 
+  group_by(id) %>% 
+  count(word1, word2) %>% 
+  left_join(get_sentiments("bing"), by = c("word2" = "word")) %>%
+  mutate(sentiment = case_when(
+    word1 %in% negate_words & sentiment == "negative" ~ "positive", 
+    word1 %in% negate_words & sentiment == "positive" ~ "negative",
+    TRUE ~ sentiment)) %>% 
+  summarize(
+    positive = sum(sentiment == "positive", na.rm = TRUE), 
+    negative = sum(sentiment == "negative", na.rm = TRUE), 
+    neutral = n() - positive - negative) %>%
+  mutate(
+    id,
+    sentiment2 = case_when(
+      positive > negative ~ "positive",
+      positive < negative ~ "negative",
+      TRUE ~ "neutral"
+    )
+  ) %>% 
+  left_join(select(textdf, id, username)) %>% 
+  select(sentiment2, id, username)
+```
+#### 3rd method: unigram sentiment analysis for tweets with 'afinn' lexicon
+```{r}
+sentimentM3 <- textdf %>% 
+  unnest_tokens(word, text) %>% 
+  left_join(get_sentiments("afinn")) %>% 
+  replace_na(list(value=0L)) %>%
+  mutate(
+    id,
+    sentiment3 = case_when(
+      sum(value) > 0 ~ "positive",
+      sum(value) < 0 ~ "negative",
+      TRUE ~ "neutral"
+    )
+  ) %>% 
+  transmute(id, sentiment3) %>%
+  unique() %>%
+  left_join(select(textdf, id, username)) %>% 
+  select(sentiment3, id, username)
+```
+Combine the results of 3 different Sentiment Analysis approach
+```r
+# new df contain 3 sentiment result, and pick the mode
+dfM123 <- sentimentM1 %>% 
+  left_join(sentimentM2, by = c("id"="id")) %>% 
+  left_join(sentimentM3, by = c("id"="id"))
+
+dfM123$sentiment1 <- str_replace(dfM123$sentiment1,"positive","1")
+dfM123$sentiment1 <- str_replace(dfM123$sentiment1,"negative","-1")
+dfM123$sentiment1 <- str_replace(dfM123$sentiment1,"neutral","0")
+
+dfM123$sentiment2 <- str_replace(dfM123$sentiment2,"positive","1")
+dfM123$sentiment2 <- str_replace(dfM123$sentiment2,"negative","-1")
+dfM123$sentiment2 <- str_replace(dfM123$sentiment2,"neutral","0")
+
+dfM123$sentiment3 <- str_replace(dfM123$sentiment3,"positive","1")
+dfM123$sentiment3 <- str_replace(dfM123$sentiment3,"negative","-1")
+dfM123$sentiment3 <- str_replace(dfM123$sentiment3,"neutral","0")
+
+dfM123$sentiment1<-as.numeric(dfM123$sentiment1)
+dfM123$sentiment2<-as.numeric(dfM123$sentiment2)
+dfM123$sentiment3<-as.numeric(dfM123$sentiment3)
+
+df2_new <- dfM123 %>% 
+  mutate(s = (sentiment1+sentiment2 +sentiment3)) %>%
+  transmute(
+    id,
+    support = case_when(
+      s > 0 ~ "yes",
+      s < 0 ~ "no",
+      TRUE ~ "neutral"
+    )
+  ) %>%
+  right_join(textdf, by=c("id" = "id")) %>%
+  transmute(support = support.x, text, inCA, influential, username = username, bio )
+
+pp16df <- df1 %>% bind_rows(df2_new)
+write.csv(pp16df,"C:\\Users\\Jaune\\Documents\\Github\\Data_Challenge\\pp16df.csv")
+```
 
 ## Logistic Regression
+Read and Process the dataset.
+```r
+# Read the data
+pp16twitter <- read_csv("pp16df.csv", col_types = cols())
 
+# Drop out the observations that are ambiguious
+temp<-pp16twitter %>% filter(support!="neutral")
+
+# Select Required Varaible
+temp<-temp %>% select(support,inCA,influential)
+
+# Replace variable with 1 and 0 to fit the logistic regression
+temp$support=ifelse(temp$support=='yes',1,0)
+temp$inCA=ifelse(temp$inCA=='yes', 1,0)
+temp$influential=ifelse(temp$influential=='yes', 1,0)
+```
+Visualize the correlation between variables using `corrgram()`
+```r
+# correlation between numeric variables
+library(corrgram)
+corrgram(temp, order = TRUE,
+         lower.panel = panel.shade, upper.panel = panel.pie,
+         text.panel = panel.txt,
+         main = "Correlogram of Variables")
+```
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Correlogram.png)
+
+Conduct the Logistic Regressopm
+```r
+initial<-glm(formula = support~inCA+influential+inCA*influential,data=temp,family = 'binomial')
+summary(initial)
+
+library(MASS)
+# Run stepAIC to get the best fit model
+stepAIC(initial,scope = list(lower=~1), direction = "backward",k=2)
+```
+Based on the result and determine the best model is the initial model, and we use the initial model to make predictions on the proportion and support of Proposition 16, compare it with the true result we obtained through text mining, and examine its sensitivity and speicifity.
+```r
+# Test the percentage of correctness given our model
+log_predprob = predict(initial, temp,type='response')
+
+# Change standard to 0.5, then there is error in prediction given our model since all of the 
+# predicted response is less than 0.5. Based on the givern result, we manage to do a good job
+# in conducting text-mining for Not support.
+standard<-0.4
+log_pred = log_predprob > standard
+log_cm = table(true = temp$support, predicted = log_pred)
+log_cm
+
+# Calculate the percentage of correctness of our model in prediction
+sum(diag(log_cm))/sum(log_cm)
+
+#Sensitivity: proportion of predictions for Yes on prop16 out of the number of samples which actually support prop16.
+sens=54/(54+246)
+
+#Specificity  proportion of predictions for No on prop16 out of the number of samples which actually object prop16.
+spec=779/(779+64)
+```
 ## Data Visualization
 
 ## Conclusion
