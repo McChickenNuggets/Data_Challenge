@@ -115,7 +115,7 @@ df2 <- pp16twi %>% filter(support == "undef")
 textdf <- df2 %>% mutate(id = 1:nrow(df2))
 ```
 ## Text Mining (Sentiment Analysis)
-#### 1st method: unigram sentiment analysis for tweets with 'bing' lexicon
+#### 1st method: Unigram sentiment analysis for tweets with 'bing' lexicon
 ```{r}
 # each tweet split into single word and take out stop words
 tweet_token <- textdf %>% 
@@ -151,7 +151,7 @@ sentimentM1 <- tweet_token %>%
   left_join(select(textdf, id, username)) %>% 
   select(sentiment1, id, username)
 ```
-#### 2nd method: bigrams sentiment analysis for tweets with 'bing' lexicon
+#### 2nd method: Bigrams sentiment analysis for tweets with 'bing' lexicon
 ```{r}
 tweet_token2 <- textdf %>%
   unnest_tokens(bigram, text, token = "ngrams", n = 2) %>% 
@@ -182,7 +182,7 @@ sentimentM2 <- tweet_token2 %>%
   left_join(select(textdf, id, username)) %>% 
   select(sentiment2, id, username)
 ```
-#### 3rd method: unigram sentiment analysis for tweets with 'afinn' lexicon
+#### 3rd method: Unigram sentiment analysis for tweets with 'afinn' lexicon
 ```{r}
 sentimentM3 <- textdf %>% 
   unnest_tokens(word, text) %>% 
@@ -261,6 +261,7 @@ name_count %>% with(wordcloud(
   colors = brewer.pal(8, "Dark2")))
 ```
 ![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/user_name.png)
+
 Word Cloud on User bio by Yes Group
 ```r
 word_pat <- "[\\D]+"
@@ -292,6 +293,7 @@ df_words_lc_yes_count%>% with(wordcloud(
   colors = brewer.pal(8, "Dark2")))
 ```
 ![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/yes_user_bio.png)
+
 Word Cloud on User bio by No Group
 ```r
 word_pat <- "[\\D]+"
