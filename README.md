@@ -386,30 +386,41 @@ spec
 The proportion of prediction for Yes on prop16 out of the number of samples which actually support prop16 is only 18% correct based on our model, and the propotion of predictions for No on prop16 out of the number of samples which actually object prop16 is 92.4% correct based on our model.Even though our model has a high specificity, but we have a negligible sensitivty. Therefore,  we conclude our current model is not significant given the limited explanatory variables we have after we filtered the useful information.
 
 # What's the impacts on UC Davis admission if pp16 pass?
-We obtain admission summary for [UC Davis] [df1] from https://www.universityofcalifornia.edu/infocenter/admissions-residency-and-ethnicity 
+We obtain admission summary for [UC Davis](https://www.universityofcalifornia.edu/infocenter/admissions-residency-and-ethnicity), and we separate the admission summary into two differnt periods to see the influences of the affirmative action. The first period is the admission summary from 1994-2003 since pp209, which ban affirmative action in 1996. Using the result from 1994 to 2003, We can see the change in admission for UC Davis before and after the affirmative action being banned. Compare the admission summary from 1994 to 2003 and admission summary from 2010 to 2019, we might see a similar pattern to investigate the upcoming consequences if pp16 passes, and use the pattern to predict the influences of pp16 on UC Davis admission for the following years.
 
-#### Change in Applicants by Ethnicity
+#### Change in Admission by Ethnicity from 1994-2003
 ```r
-# Line Plot for Applicants by Ethnicity
-ggplot(data=temp_Applicants, aes(x=Academic_year, y=Count, group=Ethnicity)) +
+# Read Admission Summary for 1994 to 2003
+ucdavis1994_2003<-read.csv('Freshmen_Eth_data_1994_2003.csv')
+# Change column names to make it readable
+colnames(ucdavis1994_2003)<-c('Category','Ethnicity','Academic_year','Count','Percentage')
+# Use temporary dataframe to prevent losses
+temp_Admits2<-ucdavis1994_2003 %>% filter(Ethnicity!='All',Ethnicity!='Unknown',Category=='Admits')
+# # Line Plot ofr Admits by Ethnicity from 1994 to 2003
+ggplot(data=temp_Admits2, aes(x=Academic_year, y=Count, group=Ethnicity)) +
   geom_line(aes(linetype=Ethnicity,color=Ethnicity))+
   geom_point(aes(shape=Ethnicity,color=Ethnicity))+
-  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
-  labs(title="Applicants Change For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
+  scale_x_continuous(name = " ", breaks = c(1994,1995,1996,1997,1998,1999,2000,2001,2002,2003))+
+  labs(title="Admits Change For All Ethnicities Over 1994 to 2003",y='Student_Numbers')
 ```
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Applicants%20Change.png)
-```r
-# Bar Plot for Applicants by Ethnicity
-ggplot(data=temp_Admits, aes(fill=Ethnicity, y=Count, x=Academic_year)) + 
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Admits_Change_1994_2003.png)
+```
+ggplot(data=temp_Admits2, aes(fill=Ethnicity, y=Count, x=Academic_year)) + 
   geom_bar(position="fill", stat="identity")+
-  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
-  labs(title="Proportion in Applicants For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
+  scale_x_continuous(name = " ", breaks = c(1994,1995,1996,1997,1998,1999,2000,2001,2002,2003))+
+  labs(title="Proportion in Admits For All Ethnicities Over 1994 to 2003",y='Student_Numbers')
 ```
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Propotion%20in%20Applicants.png)
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Proportion_in_Admits_1994_2003.png)
 
-#### Change in Admits by Ethnicity
+#### Change in Admission by Ethnicity from 2010-2019
 ```r
-# Line Plot for Admits by Ethnicity
+# Read Admission Summary for 2010 to 2019
+ucdavis2010_2019<-read.csv('Freshmen_Eth_data_2010_2019.csv')
+# Change column names to make it readable
+colnames(ucdavis2010_2019)<-c('Category','Ethnicity','Academic_year','Count','Percentage')
+# Use temporary dataframe to prevent losses
+temp_Admits<-ucdavis2010_2019 %>% filter(Ethnicity!='All',Ethnicity!='Unknown',Category=='Admits')
+# Line Plot for Admits by Ethnicity from 2010-2019
 ggplot(data=temp_Admits, aes(x=Academic_year, y=Count, group=Ethnicity)) +
   geom_line(aes(linetype=Ethnicity,color=Ethnicity))+
   geom_point(aes(shape=Ethnicity,color=Ethnicity))+
@@ -418,29 +429,12 @@ ggplot(data=temp_Admits, aes(x=Academic_year, y=Count, group=Ethnicity)) +
 ```
 ![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Admits%20Change.png)
 ```r
-# Bar Plot for Admits by Ethnicity
+# Bar Plot for Admits by Ethnicity from 2010-2019
 ggplot(data=temp_Admits, aes(fill=Ethnicity, y=Count, x=Academic_year)) + 
   geom_bar(position="fill", stat="identity")+
   scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
   labs(title="Proportion in Admits For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
 ```
 ![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Proportion%20in%20Admits.png)
-#### Change in Enrollees by Ethnicity
-```r
-# Line Plot for Enrollees by Ethnicity
-ggplot(data=temp_Enrollees, aes(x=Academic_year, y=Count, group=Ethnicity)) +
-  geom_line(aes(linetype=Ethnicity,color=Ethnicity))+
-  geom_point(aes(shape=Ethnicity,color=Ethnicity))+
-  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
-  labs(title="Enrollees Change For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
-```
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Enrollees%20Change.png)
-```r
-# Bar Plot for Applicants by Ethnicity
-ggplot(data=temp_Admits, aes(fill=Ethnicity, y=Count, x=Academic_year)) + 
-  geom_bar(position="fill", stat="identity")+
-  scale_x_continuous(name = " ", breaks = c(2010,2011,2012,2013,2014,2015,2016,2017,2018,2019))+
-  labs(title="Proportion in Applicants For All Ethnicities Over 2010 to 2019",y='Student_Numbers')
-```
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Proportion%20in%20Enrollees.png)
+
 ## Conclusion
