@@ -40,7 +40,7 @@ ggplot(data_pie1, aes(x=Proposition, y=num, fill=Proposition)) +
   ylab("Number of Tweets")
 ```
 
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Proposition%20popularity%20share.png)
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Proposition_popularity_share.png)
 
 Based on the proposition popularity share, we can see Proposition 16 is the most controversial one among all the propositions. In the past 30 days, there are nearly 3000 tweets that contain the hashtag of #Prop16. 
 
