@@ -299,10 +299,16 @@ sum(diag(log_cm))/sum(log_cm)
 
 #Sensitivity: proportion of predictions for Yes on prop16 out of the number of samples which actually support prop16.
 sens=54/(54+246)
+sens
 
-#Specificity  proportion of predictions for No on prop16 out of the number of samples which actually object prop16.
+#Specificity: proportion of predictions for No on prop16 out of the number of samples which actually object prop16.
 spec=779/(779+64)
+spec
 ```
+The proportion of prediction for Yes on prop16 out of the number of samples which actually support prop16 is only 18% correct based on our model.
+The propotion of predictions for No on prop16 out of the number of samples which actually object prop16 is 92.4% correct based on our model.
+Therefore, our current model is not significant given the limited explanatory variables we have after we filtered the useful information.
+
 ## Data Visualization
 
 ## Conclusion
