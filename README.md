@@ -260,7 +260,7 @@ name_count %>% with(wordcloud(
   screen_name, n, min.freq = 1, max.words = 20, random.order = FALSE,
   colors = brewer.pal(8, "Dark2")))
 ```
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/wordcloud_user.png)
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/user_name.png)
 ```r
 word_pat <- "[\\D]+"
 word_pat1 <- "\\w{3,}"
@@ -291,7 +291,7 @@ df_words_lc_yes_count%>% with(wordcloud(
   colors = brewer.pal(8, "Dark2")))
 ```
 Word Cloud on User bio by Yes Group
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/wordcloud_Yes.png)
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/yes_user_bio.png)
 ```r
 word_pat <- "[\\D]+"
 word_pat1 <- "\\w{3,}"
@@ -321,7 +321,7 @@ df_words_lc_no_count%>% with(wordcloud(
   colors = brewer.pal(8, "Dark2")))
 ```
 Word Cloud on User bio by No Group
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/wordcloud_No.png)
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/no_user_bio.png)
 
 ## Logistic Regression
 Read and Process the dataset.
