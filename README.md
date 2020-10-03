@@ -13,8 +13,14 @@ This is a project focusing on the impacts of Proposition 16. We retrieve data fr
   - Data Visualization
   - Conclusion
 
-## Web Scraping
+#  How controversial is the topic?
+- Collect the number of pp16 relevant tweets from twitter
+- Collect the number of relevant tweets for each pp (15~24)
+- Compare 16 with the other 9 pp with bar graph 
 
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Proposition%20popularity%20share.png)
+
+## Web Scraping
 #### Search tweets
 Search for up to 15,000 (non-retweeted) tweets containing the #Prop16 hashtag.
 ```r
