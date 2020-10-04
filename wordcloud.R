@@ -4,6 +4,10 @@ library(tidytext)
 library(wordcloud)
 data(stop_words)
 
+# Import datasets
+pp16df<- read_csv("pp16df.csv", col_types = cols())
+pp16twitter<- read_csv("pp16twitter.csv", col_types = cols())
+
 #divide users according to their attitude toward proposition 16
 pp16_no<-pp16df %>% filter(support=="no") %>% transmute(bio) %>% unique()
 
