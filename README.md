@@ -1,5 +1,6 @@
-# README
-## 2020 Data Challenge by Team Outliers
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Team_Outlier_Logo.png)
+
+# README: 2020 Data Challenge by Team Outliers
 
 This is the main directory for data and support files related to the Team Outliers. 
 
