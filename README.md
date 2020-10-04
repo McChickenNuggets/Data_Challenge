@@ -1,4 +1,4 @@
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Team_Outlier_Logo.png)
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Team_Outlier_Logo_1.png)
 
 # README: 2020 Data Challenge by Team Outliers
 
