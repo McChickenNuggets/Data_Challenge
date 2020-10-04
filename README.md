@@ -1,7 +1,5 @@
-![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Team_Outlier_Logo.png)
-
 # README
-### 2020 Data Challenge by Team Outliers
+## 2020 Data Challenge by Team Outliers
 
 This is the main directory for data and support files related to the Team Outliers. 
 
@@ -33,6 +31,9 @@ With our topics of interest, we developed three research questions relevant to P
 ### Methodology
 Data for Prop 16 is collected from Twitter through api and web scraping. To approach Q1, we use a bar graph to visualize the popularity of Prop 16 by comparing its number of tweets within 30 days with the other nine. To approach Q2, we clean the data and classify tweets by yes and no coalitions for Prop 16 in two ways. For those with tendentious keywords in hashtags, we classify based on hashtags. For those without, we apply text-mining on each tweet content, and classify the coalitions based on 3 methods of sentiment analysis. We then use the resultant dataset to figure out users who are most engaged in the topic, and the most frequent words in the biography of each coalition. Meanwhile, we also try to construct a logistic model that predicts coalitions using the user location and account influence with the model's effectiveness evaluated. To approach Q3, we obtain official data from University of California admission. Assuming admission decisions before Prop 209 would somehow reference the trend after Prop 16, we visualize UCD admission by ethnicity from year 1994 to year 2013 as well as the more recent admission from year 2010 to year 2019. We analyze and generalize the trend in graphs and make further conclusions on possible variations in UCD admission if Prop 16 passes and under assumption that everything else is constant (ideal situation with no demographic change, etc).  
 
+### Flow Chart
+![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Flow_Chart.png)
+
 ### Directory Manifest
 - Folders:
     - “Datasets” - contains UCD admission data by ethnicity and Prop 16 relevant data from Twitter
@@ -57,6 +58,4 @@ Data for Prop 16 is collected from Twitter through api and web scraping. To appr
 
 ### Project URL
 - UCD admission dataset: https://www.universityofcalifornia.edu/infocenter/admissions-residency-and-ethnicity
-
-### Project Repository 
 - rtweet: https://github.com/ropensci/rtweet/ 
