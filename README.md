@@ -1,4 +1,5 @@
 ![image](https://github.com/McChickenNuggets/Data_Challenge/blob/master/img/Team_Outlier.png)
+
 This project focuses on 2020 California Proposition 16 as our topic.
 
 ### Background Information 
@@ -25,29 +26,28 @@ With our topics of interest, we developed three research questions relevant to P
 - Q3: What would be the impact on UC Davis admission if Proposition 16 passes?
 
 
-## File Overview
-- “Datasets” 
-    - Contains past admission summaries based on ethnicity from University of California from 1994 to 2003
-    - Contains past admission summaries based on ethnicity from University of California from 2010 to 2019
-    - Contains modified dataset on twitter users.
-- “Img” - Contains visualization plots.
-- “barplot.R” - Contains code for the barplot of proposition popularity share.
-- “data_visualization.R” 
-    - Contains code for Change in Admission by Ethnicity from 1994-2003.
-    - Contains code for Change in Admission by Ethnicity from 2010-2019.
-- “logistic_regression_with_sensitivity.R” - Contains code for logistic model based on modified dataset. 
-- “rtweet.R” - contains the code of retrieving users’ tweets in the last thirty days.
-- “text_mining.R” - This file contains three techniques to analyze words in tweets. 
-- “wordcloud.R” - Codes in this file is used to display the most frequent words. 
+### Directory Manifest
+- Folders:
+    - “Datasets” - Contains past admission summaries based on ethnicity from University of California and modified dataset about twitter users.
+    - “Img” - Contains visualization plots.
+- Files: 
+    - “barplot.R” - Contains code for the barplot of proposition popularity share.
+    - “data_visualization.R” 
+        - Contains code for Change in Admission by Ethnicity from 1994-2003.
+        - Contains code for Change in Admission by Ethnicity from 2010-2019..
+    - “logistic_regression_with_sensitivity.R” - This file contains code for analysis on a logistic model about two dependent variables “inCA” and “influential” and one response variable “support”. 
+    - “rtweet.R” - contains the code of retrieving users’ tweets in the last thirty days.
+    - “text_mining.R” - This file contains three techniques to analyze words in tweets. 
+    - “wordcloud.R” - Codes in this file are used to display the most frequent words in users’ bio and the most active twitter users discussing proposition 16. 
 
 ## Presentations
 - [Slideshow Presentation](https://github.com/McChickenNuggets/Data_Challenge/blob/master/PresentationDC.pptx)
 - [Video Presentation](https://github.com/McChickenNuggets/Data_Challenge/blob/master/PresentationDC.pptx)
 
 ## Contributors
-- Annie Tang
-- Xuanbin Chen
-- Chao Cheng
+- Annie Tang, UC Davis Statistics Undergraduate, yntang@ucdavis.edu
+- Xuanbin Chen, UC Davis Statistics Undergraduate, cxbchen@ucdavis.edu
+- Chao Cheng, UC Davis Statistics Graduate, kckcheng@ucdavis.edu
 
 ## Data Sources
 - https://lao.ca.gov/ballot/2020/Prop16-110320.pdf
