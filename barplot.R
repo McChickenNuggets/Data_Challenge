@@ -45,9 +45,9 @@ data_pie<-data.frame(num=c(tw15,tw16,tw17,tw18,tw19,tw20,tw21,tw22,tw23,tw24), P
 
 data_pie1 <-data_pie %>% mutate(per=num/sum(num))
 
-#barplot on Number of Tweets
+#barplot on Number of Tweets for proposistions.
 q<-ggplot(data_pie1, aes(x=Proposition, y=num)) +
   geom_bar(stat="identity",fill="steelblue")+theme_minimal()+ 
-  ggtitle("Number of Tweets") + 
+  ggtitle("Number of Tweets for proposistions") + 
   ylab("Number of Tweets")
 q
