@@ -4,13 +4,12 @@ library(tidytext)
 library(wordcloud)
 data(stop_words)
 
-pp16df
-
+#divide users according to their attitude toward proposition 16
 pp16_no<-pp16df %>% filter(support=="no") %>% transmute(bio) %>% unique()
 
 pp16_yes<-pp16df %>% filter(support=="yes") %>%  transmute(bio) %>% unique()
 
-####################wordcloud bio for no
+#wordcloud of bio for no
 word_pat <- "[\\D]+"
 word_pat1 <- "\\w{3,}"
 
@@ -34,15 +33,11 @@ df_words_lc_no_count<-df_words_lc_no%>%
   arrange(desc(n)) %>% 
   na.omit()
 
-#df_words_lc_no_count<-df_words_lc_no_count %>% filter(n>4)
-#wordcloud(df_words_lc_no_count$word, df_words_lc_no_count$n, 
-#          scale=c(3.5,0.3), random.order=FALSE, rot.per=.3)
-
 df_words_lc_no_count%>% with(wordcloud(
   word, n, min.freq = 1, max.words = 15, random.order = FALSE,
   colors = brewer.pal(8, "Dark2")))
 
-####################wordcloud bio for yes
+#wordcloud of bio for yes
 word_pat <- "[\\D]+"
 word_pat1 <- "\\w{3,}"
 
@@ -66,17 +61,11 @@ df_words_lc_yes_count<-df_words_lc_yes%>%
   arrange(desc(n)) %>% 
   na.omit()
 
-#df_words_lc_yes_count<-df_words_lc_yes_count %>% filter(n>4)
-#wordcloud(df_words_lc_yes_count$word, df_words_lc_yes_count$n, 
-#          scale=c(3.5,0.3), random.order=FALSE, rot.per=.3)
-
-###
 df_words_lc_yes_count%>% with(wordcloud(
   word, n, min.freq = 1, max.words = 15, random.order = FALSE,
   colors = brewer.pal(8, "Dark2")))
-###
 
-######################wordcloud bio for username 
+#wordcloud of username for active user
 name_count<-pp16twitter %>% group_by(screen_name) %>%
   summarize(n = n()) %>% 
   arrange(desc(n)) %>% 
@@ -85,8 +74,4 @@ name_count<-pp16twitter %>% group_by(screen_name) %>%
 name_count %>% with(wordcloud(
   screen_name, n, min.freq = 1, max.words = 20, random.order = FALSE,
   colors = brewer.pal(8, "Dark2")))
-
-
-
-
 
