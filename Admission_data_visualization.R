@@ -67,7 +67,7 @@ ggplot(data=temp_all_campus, aes(x=Academic_year, y=Percentage, group=Ethnicity)
   labs(title="All Campus Admits Proprtion Change For All Ethnicities Over 1994 to 2003",y='Percentage Share')
 
 # All Campus Bar Plot ofr Admits by Ethnicity from 1994 to 2003
-ggplot(data=temp_Admits2, aes(fill=Ethnicity, y=Percentage, x=Academic_year)) + 
+ggplot(data=temp_all_campus, aes(fill=Ethnicity, y=Percentage, x=Academic_year)) + 
   geom_bar(position="fill", stat="identity")+
   scale_x_continuous(name = " ", breaks = c(1994,1995,1996,1997,1998,1999,2000,2001,2002,2003))+
   labs(title="All Campus Proportion in Admits For All Ethnicities Over 1994 to 2003",y='Percentage Share')
